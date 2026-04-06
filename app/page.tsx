@@ -1,9 +1,18 @@
 'use client'
 
 import { useUser } from '@clerk/nextjs'
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 
 export default function Home() {
   const { isLoaded, isSignedIn, user } = useUser()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (isLoaded && isSignedIn) {
+      router.replace('/listings')
+    }
+  }, [isLoaded, isSignedIn, router])
 
   if (!isLoaded) {
     return (

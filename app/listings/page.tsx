@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useEffect } from "react";
+import { useUser } from "@clerk/nextjs";
 
-import { loadConfig, loadHistory, saveHistory } from "@/lib/config";
+import { loadHistory, saveHistory } from "@/lib/config";
 import { geminiOCR } from "@/lib/ocr";
 import { generateListing } from "@/lib/listing";
 import { uploadToEbayEPS } from "@/lib/imageUpload";
@@ -20,6 +21,7 @@ import TigerMascot from "@/components/TigerMascot";
 import ListingChatAgent from "@/components/ListingChatAgent";
 
 export default function ListingsPage() {
+  const { user } = useUser();
   const [images, setImages] = useState<any[]>([]);
   const [status, setStatus] = useState<any>({ type: "idle", message: "" });
   const [listing, setListing] = useState<any>(null);
@@ -32,8 +34,16 @@ export default function ListingsPage() {
   const [mascot, setMascot] = useState("idle");
   const [loadingResults, setLoadingResults] = useState(false);
 
+  // Load config from Clerk metadata (cross-device, per-user)
   useEffect(() => {
-    setConfig(loadConfig());
+    if (user) {
+      const clerkConfig = (user.unsafeMetadata as any)?.config || {};
+      setConfig(clerkConfig);
+    }
+  }, [user]);
+
+  // Restore listing from history navigation
+  useEffect(() => {
     try {
       const restore = localStorage.getItem("tigersRestoreV2");
       if (restore) {

@@ -1,7 +1,6 @@
 'use client'
 
-import { useState } from "react";
-import { saveConfig } from "@/lib/config";
+import { useState, useEffect } from "react";
 
 const FIELDS = [
   { key: "proxyUrl",     label: "Cloudflare Worker URL",                       type: "text",     placeholder: "https://your-worker.workers.dev" },
@@ -19,20 +18,32 @@ const FIELDS = [
 export default function SettingsTab({ config, onSave }) {
   const [form, setForm] = useState({ ...config });
   const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  // Sync form when config loads from Clerk (arrives after initial render)
+  useEffect(() => {
+    if (Object.keys(config).length > 0) {
+      setForm({ ...config });
+    }
+  }, [JSON.stringify(config)]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
 
-  const handleSave = () => {
-    saveConfig(form);
-    onSave(form);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      await onSave(form);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
     <div className="settings-tab">
       <h2 className="settings-title">API Settings</h2>
-      <p className="settings-hint">All keys are stored in your browser's localStorage — never sent anywhere except through your own Worker.</p>
+      <p className="settings-hint">Settings are saved to your account — available on any device when you sign in.</p>
 
       <div className="settings-grid">
         {FIELDS.map(({ key, label, type, placeholder }) => (
@@ -50,8 +61,8 @@ export default function SettingsTab({ config, onSave }) {
         ))}
       </div>
 
-      <button className="btn-primary" onClick={handleSave}>
-        {saved ? "Saved!" : "Save Settings"}
+      <button className="btn-primary" onClick={handleSave} disabled={saving}>
+        {saving ? "Saving…" : saved ? "Saved!" : "Save Settings"}
       </button>
     </div>
   );
