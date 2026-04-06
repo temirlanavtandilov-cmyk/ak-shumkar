@@ -38,14 +38,57 @@
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'Barlow', sans-serif;
+  font-family: 'Barlow', sans-serif !important;
   font-size: 15px;
   line-height: 1.5;
 }
 
+/* ── Header ── */
+.app-header {
+  background: linear-gradient(135deg, #009C4D 0%, #007E8B 100%);
+  color: var(--white);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+}
+.header-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+}
+.app-brand { display: flex; align-items: center; gap: 12px; }
+.brand-logo-icon { display: flex; align-items: center; flex-shrink: 0; }
+.brand-wordmark { display: flex; flex-direction: column; gap: 0; }
+.brand-wordmark-top { display: flex; align-items: baseline; gap: 8px; line-height: 1; }
+.brand-easy  { font-family: 'Barlow', sans-serif; font-weight: 500; font-size: 22px; color: #fff; letter-spacing: 0.3px; }
+.brand-list  { font-family: 'Barlow Condensed', sans-serif; font-weight: 400; font-size: 13px; color: rgba(255,255,255,0.65); letter-spacing: 5px; text-transform: uppercase; }
+.brand-tagline { font-size: 10px; color: rgba(255,255,255,0.5); letter-spacing: 1px; margin-top: 2px; }
+
+/* ── Tab Nav ── */
+.tab-nav { display: flex; gap: 4px; }
+.tab-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: rgba(255,255,255,0.7);
+  font-family: 'Barlow', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.tab-btn:hover  { color: #fff; background: rgba(255,255,255,0.15); }
+.tab-btn.active { color: #fff; border-color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.18); }
+
 /* ── Main layout ── */
 .app-main {
-  max-width: 860px;
+  max-width: 1080px;
   margin: 0 auto;
   padding: 28px 20px 60px;
 }
