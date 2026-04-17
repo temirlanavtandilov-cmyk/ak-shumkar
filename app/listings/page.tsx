@@ -171,6 +171,7 @@ export default function ListingsPage() {
           <div className="results-wrap">
             <StatusBar status={status} />
 
+            {/* Title — full width */}
             <ResultCard title="Listing Title" copyValue={listing.title}>
               <EditableField
                 label="Title (80 char max)"
@@ -180,77 +181,80 @@ export default function ListingsPage() {
               <div className="char-count">{(listing.title || "").length}/80</div>
             </ResultCard>
 
-            <ResultCard title="Part Info" copyValue={listing.lean}>
-              <EditableField label="OEM Part #" value={listing.lean?.oem} onChange={(v: string) => updateListing("lean.oem", v)} />
-              <EditableField label="Interchange #" value={listing.lean?.interchange} onChange={(v: string) => updateListing("lean.interchange", v)} />
-              <EditableField label="Placement" value={listing.lean?.placement} onChange={(v: string) => updateListing("lean.placement", v)} />
-              <EditableField label="Fitment" value={listing.lean?.fitment} onChange={(v: string) => updateListing("lean.fitment", v)} />
-              <EditableField label="Condition" value={listing.lean?.condition} onChange={(v: string) => updateListing("lean.condition", v)} />
-              <EditableField label="Price ($)" value={listing.lean?.price} onChange={(v: string) => updateListing("lean.price", v)} />
-            </ResultCard>
+            {/* Two-column grid on desktop */}
+            <div className="results-grid">
+              {/* Left: Part Info + Description */}
+              <div>
+                <ResultCard title="Part Info" copyValue={listing.lean}>
+                  <div className="part-info-grid">
+                    <EditableField label="OEM Part #"    value={listing.lean?.oem}         onChange={(v: string) => updateListing("lean.oem", v)} />
+                    <EditableField label="Interchange #" value={listing.lean?.interchange}  onChange={(v: string) => updateListing("lean.interchange", v)} />
+                    <EditableField label="Placement"     value={listing.lean?.placement}    onChange={(v: string) => updateListing("lean.placement", v)} />
+                    <EditableField label="Condition"     value={listing.lean?.condition}    onChange={(v: string) => updateListing("lean.condition", v)} />
+                    <EditableField label="Fitment"       value={listing.lean?.fitment}      onChange={(v: string) => updateListing("lean.fitment", v)} />
+                    <EditableField label="Price ($)"     value={listing.lean?.price}        onChange={(v: string) => updateListing("lean.price", v)} />
+                  </div>
+                </ResultCard>
 
-            <ResultCard title="eBay Details" copyValue={listing.ebay}>
-              <EditableField label="Category ID" value={listing.ebay?.categoryId} onChange={(v: string) => updateListing("ebay.categoryId", v)} />
-              <EditableField label="Condition ID (1000=New, 3000=Used)" value={listing.ebay?.conditionId} onChange={(v: string) => updateListing("ebay.conditionId", v)} />
-            </ResultCard>
+                <ResultCard title="Description" copyValue={listing.description}>
+                  <EditableField label="Description" value={listing.description} onChange={(v: string) => updateListing("description", v)} multiline />
+                </ResultCard>
 
-            <ResultCard title="Description" copyValue={listing.description}>
-              <EditableField label="Description" value={listing.description} onChange={(v: string) => updateListing("description", v)} multiline />
-            </ResultCard>
-
-            <ResultCard title="Shipping">
-              <div className="shipping-toggle">
-                <button
-                  className={`shipping-opt ${(listing.shipping?.type || "free") === "free" ? "active" : ""}`}
-                  onClick={() => updateListing("shipping.type", "free")}
-                >
-                  Free Shipping
-                </button>
-                <button
-                  className={`shipping-opt ${listing.shipping?.type === "flat" ? "active" : ""}`}
-                  onClick={() => updateListing("shipping.type", "flat")}
-                >
-                  Flat Rate
-                </button>
+                {ocrText && (
+                  <ResultCard title="OCR Source Text" copyValue={ocrText}>
+                    <pre className="ocr-text">{ocrText}</pre>
+                  </ResultCard>
+                )}
               </div>
-              {listing.shipping?.type === "flat" && (
-                <EditableField label="Shipping Cost ($)" value={listing.shipping?.cost} onChange={(v: string) => updateListing("shipping.cost", v)} />
-              )}
-              <EditableField label="Weight (lbs)" value={listing.shipping?.weight_lbs} onChange={(v: string) => updateListing("shipping.weight_lbs", v)} />
-            </ResultCard>
 
-            {listing.condition_flag && (
-              <ResultCard title="Condition / Damage Notes" copyValue={listing.condition_flag}>
-                <EditableField label="Notes" value={listing.condition_flag} onChange={(v: string) => updateListing("condition_flag", v)} multiline />
-              </ResultCard>
-            )}
+              {/* Right: eBay + Shipping + Condition */}
+              <div>
+                <ResultCard title="eBay Details" copyValue={listing.ebay}>
+                  <EditableField label="Category ID"                     value={listing.ebay?.categoryId}  onChange={(v: string) => updateListing("ebay.categoryId", v)} />
+                  <EditableField label="Condition ID (1000=New, 3000=Used)" value={listing.ebay?.conditionId} onChange={(v: string) => updateListing("ebay.conditionId", v)} />
+                </ResultCard>
 
-            {ocrText && (
-              <ResultCard title="OCR Source Text" copyValue={ocrText}>
-                <pre className="ocr-text">{ocrText}</pre>
-              </ResultCard>
-            )}
+                <ResultCard title="Shipping">
+                  <div className="shipping-toggle">
+                    <button
+                      className={`shipping-opt ${(listing.shipping?.type || "free") === "free" ? "active" : ""}`}
+                      onClick={() => updateListing("shipping.type", "free")}
+                    >
+                      Free Shipping
+                    </button>
+                    <button
+                      className={`shipping-opt ${listing.shipping?.type === "flat" ? "active" : ""}`}
+                      onClick={() => updateListing("shipping.type", "flat")}
+                    >
+                      Flat Rate
+                    </button>
+                  </div>
+                  {listing.shipping?.type === "flat" && (
+                    <EditableField label="Shipping Cost ($)" value={listing.shipping?.cost} onChange={(v: string) => updateListing("shipping.cost", v)} />
+                  )}
+                  <EditableField label="Weight (lbs)" value={listing.shipping?.weight_lbs} onChange={(v: string) => updateListing("shipping.weight_lbs", v)} />
+                </ResultCard>
 
+                {listing.condition_flag && (
+                  <ResultCard title="Condition / Damage Notes" copyValue={listing.condition_flag}>
+                    <EditableField label="Notes" value={listing.condition_flag} onChange={(v: string) => updateListing("condition_flag", v)} multiline />
+                  </ResultCard>
+                )}
+              </div>
+            </div>
+
+            {/* Promotion + actions — full width */}
             <PromotionPicker promotion={promotion} onChange={setPromotion} campaignId={config.campaignId} />
 
             <div className="action-bar">
-              <button className="btn-secondary" onClick={handleReset}>
-                Start Over
-              </button>
-              <button className="btn-primary" onClick={handlePublish}>
-                Publish to eBay
-              </button>
+              <button className="btn-secondary" onClick={handleReset}>Start Over</button>
+              <button className="btn-primary" onClick={handlePublish}>Publish to eBay</button>
             </div>
 
             {publishedUrl && (
               <div className="published-banner">
-                <span>
-                  <span className="published-check">✓</span>{" "}
-                  Listed successfully!
-                </span>
-                <a href={publishedUrl} target="_blank" rel="noreferrer">
-                  View on eBay
-                </a>
+                <span><span className="published-check">✓</span> Listed successfully!</span>
+                <a href={publishedUrl} target="_blank" rel="noreferrer">View on eBay</a>
               </div>
             )}
           </div>

@@ -4,7 +4,7 @@ import Header from './header'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Tigers Body Shop — Easy List Agent',
+  title: 'Easy List — Auto Parts Listing Agent',
   description: 'Snap, list, and sell auto parts faster with AI.',
 }
 
@@ -16,7 +16,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className="min-h-full flex flex-col">
+        <body>
           <Header />
           {children}
         </body>
